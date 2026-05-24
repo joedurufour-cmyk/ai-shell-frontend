@@ -1,749 +1,236 @@
-<!doctype html>
-<html lang="es">
-<head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>AI Shell — SaaS</title>
-<style>
-:root{
-  --bg:#0f172a;--panel:#111827;--panel2:#1f2937;--text:#e5e7eb;--muted:#94a3b8;
-  --accent:#38bdf8;--border:#334155;--danger:#fb7185;--ok:#34d399;--warn:#fbbf24;
-  --pro:#a78bfa;--gold:#fbbf24;
-}
-.light{--bg:#f8fafc;--panel:#ffffff;--panel2:#e2e8f0;--text:#0f172a;--muted:#64748b;--border:#cbd5e1}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,Arial;font-size:14px}
-.app{display:grid;grid-template-columns:280px 1fr;min-height:100vh}
-.sidebar{background:var(--panel);border-right:1px solid var(--border);padding:14px;display:flex;flex-direction:column;gap:10px;overflow-y:auto}
-.brand{font-weight:800;font-size:17px;color:var(--accent)}
-.badge-free{font-size:10px;border:1px solid var(--border);padding:2px 7px;border-radius:99px;color:var(--muted)}
-.badge-pro{font-size:10px;background:var(--pro);color:#000;padding:2px 7px;border-radius:99px;font-weight:700}
-button,select,input,textarea{background:var(--panel2);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:9px 12px;font-size:13px;font-family:inherit}
-button{cursor:pointer;transition:border-color .2s}button:hover{border-color:var(--accent)}
-.btn-primary{background:var(--accent);color:#001018;font-weight:700;border-color:var(--accent)}
-.btn-pro{background:var(--pro);color:#000;font-weight:700;border-color:var(--pro)}
-.btn-danger{border-color:var(--danger);color:var(--danger)}
-.btn-sm{padding:5px 10px;font-size:11px}
-.row{display:flex;gap:8px;align-items:center}
-.col{display:flex;flex-direction:column;gap:8px}
-.grow{flex:1}
-.chat-list{overflow-y:auto;display:flex;flex-direction:column;gap:6px;max-height:240px}
-.chat-item{padding:9px 12px;border:1px solid var(--border);border-radius:10px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
-.chat-item:hover{border-color:var(--muted)}
-.chat-item.active{border-color:var(--accent)}
-.chat-item-del{opacity:.4;font-size:12px}
-.main{display:grid;grid-template-rows:auto 1fr auto;min-height:100vh}
-.topbar{padding:10px 16px;border-bottom:1px solid var(--border);display:flex;gap:8px;justify-content:space-between;align-items:center;flex-wrap:wrap}
-.messages{padding:20px;overflow-y:auto}
-.msg{max-width:860px;margin:0 auto 12px;padding:14px;border:1px solid var(--border);border-radius:14px;background:var(--panel)}
-.msg.user{background:rgba(56,189,248,.07);border-color:rgba(56,189,248,.2)}
-.msg .meta{display:flex;justify-content:space-between;color:var(--muted);font-size:11px;margin-bottom:6px}
-.composer{padding:12px 16px;border-top:1px solid var(--border);display:grid;grid-template-columns:1fr auto;gap:10px}
-textarea{min-height:50px;resize:vertical;width:100%}
-.card{border:1px solid var(--border);border-radius:12px;padding:12px;background:var(--panel)}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}
-.stat-val{font-size:20px;font-weight:700;color:var(--accent)}
-.stat-label{font-size:10px;color:var(--muted)}
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:100;display:flex;align-items:center;justify-content:center;padding:16px}
-.modal-overlay.hidden{display:none}
-.modal{background:var(--panel);border:1px solid var(--border);border-radius:20px;padding:24px;width:min(500px,100%);max-height:90vh;overflow-y:auto}
-.modal h2{margin:0 0 4px;font-size:20px}
-.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0}
-.plan{border:2px solid var(--border);border-radius:14px;padding:14px;text-align:center;cursor:pointer;transition:border-color .2s}
-.plan:hover{border-color:var(--accent)}
-.plan.popular{border-color:var(--pro)}
-.plan-name{font-weight:700;font-size:13px}
-.plan-price{font-size:22px;font-weight:800;color:var(--accent);margin:4px 0}
-.plan-price span{font-size:12px;color:var(--muted);font-weight:400}
-.plan-feat{font-size:11px;color:var(--muted);margin-top:6px;line-height:1.6}
-.key-row{display:flex;gap:8px;margin:12px 0}
-.key-row input{flex:1;font-family:monospace;letter-spacing:1px}
-.locked-wrap{position:relative}
-.locked-overlay{position:absolute;inset:0;background:rgba(15,23,42,.85);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;z-index:10;cursor:pointer}
-.locked-overlay .lock-icon{font-size:28px}
-.locked-overlay .lock-label{font-size:12px;color:var(--pro);font-weight:700}
-.settings-panel{position:fixed;right:16px;top:64px;width:min(420px,calc(100vw - 32px));max-height:82vh;overflow-y:auto;background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:16px;display:none;z-index:50}
-.settings-panel.open{display:block}
-.form-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin:10px 0 4px;display:block}
-pre{white-space:pre-wrap;margin:0;font-family:inherit;line-height:1.6}
-.loading-dot{display:inline-block;animation:pulse 1s infinite}
-@keyframes pulse{0%,100%{opacity:.3}50%{opacity:1}}
-.module-tag{font-size:10px;padding:2px 6px;border-radius:4px;font-weight:700}
-.tag-free{background:rgba(52,211,153,.15);color:var(--ok)}
-.tag-pro{background:rgba(167,139,250,.15);color:var(--pro)}
-.offline-banner{background:rgba(251,191,36,.1);border:1px solid var(--warn);border-radius:8px;padding:8px 12px;font-size:12px;color:var(--warn);display:flex;align-items:center;gap:8px}
-.profile-chips{display:flex;flex-wrap:wrap;gap:6px}
-.pchip{padding:6px 12px;border:1px solid var(--border);border-radius:20px;font-size:12px;cursor:pointer}
-.pchip.active{border-color:var(--accent);color:var(--accent)}
-.pchip.locked{border-color:var(--pro);color:var(--pro);opacity:.6;cursor:not-allowed}
-.analytics-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.bar-wrap{background:var(--panel2);border-radius:6px;height:8px;margin-top:4px;overflow:hidden}
-.bar-fill{background:var(--accent);height:100%;border-radius:6px;transition:width .4s}
-@media(max-width:700px){
-  .app{grid-template-columns:1fr}.sidebar{display:none}
-  .plans{grid-template-columns:1fr}
-  .composer{grid-template-columns:1fr}
-}
-</style>
-</head>
-<body>
-<div class="app">
-  <aside class="sidebar">
-    <div class="row">
-      <div class="brand">AI Shell</div>
-      <span id="planBadge" class="badge-free">FREE</span>
-    </div>
-    <button class="btn-primary" id="newChatBtn" style="width:100%">+ Nuevo chat</button>
-    <div class="row">
-      <button class="btn-sm grow" id="exportJsonBtn">↓ JSON</button>
-      <button class="btn-sm grow" id="exportMdBtn">↓ MD</button>
-      <button class="btn-sm grow" id="importBtn">↑ Import</button>
-      <input type="file" id="importFile" hidden accept=".json"/>
-    </div>
-    <div style="font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px">Conversaciones</div>
-    <div class="chat-list" id="chatList"></div>
-    <div class="card">
-      <div style="font-size:12px;font-weight:700;margin-bottom:8px">Uso</div>
-      <div class="stats">
-        <div><div class="stat-val" id="msgCount">0</div><div class="stat-label">mensajes</div></div>
-        <div><div class="stat-val" id="tokenCount">0</div><div class="stat-label">tokens</div></div>
-        <div><div class="stat-val" id="creditCount">—</div><div class="stat-label">créditos</div></div>
-      </div>
-    </div>
-    <button class="btn-pro" id="upgradeBtn" style="width:100%">⭐ Upgrade a PRO</button>
-  </aside>
+import os
+import uuid
+import sqlite3
+import json
+from datetime import datetime, timedelta
 
-  <main class="main">
-    <header class="topbar">
-      <div>
-        <b id="chatTitle">Nuevo chat</b>&nbsp;
-        <span style="font-size:11px;color:var(--muted)" id="status">offline · listo</span>
-      </div>
-      <div class="row" style="flex-wrap:wrap;gap:6px">
-        <select id="modeSelect">
-          <option value="offline">Offline</option>
-          <option value="online">Online (Gemini)</option>
-          <option value="auto">Auto fallback</option>
-        </select>
-        <select id="profileSelect"></select>
-        <button id="settingsBtn">⚙ Config</button>
-        <button id="themeBtn">◑ Tema</button>
-      </div>
-    </header>
-    <section class="messages" id="messages"></section>
-    <footer class="composer">
-      <textarea id="input" placeholder="Escribe tu mensaje… Shift+Enter = nueva línea"></textarea>
-      <div class="col">
-        <button class="btn-primary" id="sendBtn">Enviar</button>
-        <button class="btn-danger btn-sm" id="clearBtn">Limpiar</button>
-      </div>
-    </footer>
-  </main>
-</div>
+from fastapi import FastAPI, Request, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 
-<div class="settings-panel" id="settingsPanel">
-  <div class="row" style="justify-content:space-between;margin-bottom:12px">
-    <b>Configuración</b>
-    <button class="btn-sm" id="closeSettings">✕</button>
-  </div>
-  <div class="col">
-    <span class="form-label">Modo de respuesta</span>
-    <select id="cfgMode">
-      <option value="offline">Offline — sin API</option>
-      <option value="online">Online — Gemini real</option>
-      <option value="auto">Auto fallback</option>
-    </select>
-    <span class="form-label">Memoria local <span class="module-tag tag-free">FREE</span></span>
-    <textarea id="cfgMemory" placeholder="Datos que el asistente debe recordar siempre" style="min-height:70px"></textarea>
-    <span class="form-label">System prompt <span class="module-tag tag-free">FREE</span></span>
-    <textarea id="cfgSystem" style="min-height:80px"></textarea>
-    <button class="btn-primary" id="saveSettingsBtn">Guardar configuración</button>
-  </div>
-</div>
+import google.generativeai as genai
 
-<div class="modal-overlay hidden" id="upgradeModal">
-  <div class="modal">
-    <h2>⭐ Upgrade a PRO</h2>
-    <p style="color:var(--muted);font-size:13px;margin:0 0 12px">Desbloquea Gemini real, todos los perfiles, agentes y analíticas.</p>
-    <div class="plans">
-      <div class="plan" id="planMonthly">
-        <div class="plan-name">Mensual</div>
-        <div class="plan-price">$9<span>/mes</span></div>
-        <div class="plan-feat">Gemini real<br>Todos los perfiles<br>Export completo<br>Analíticas</div>
-        <button class="btn-pro btn-sm" style="width:100%;margin-top:10px" onclick="openStripe('monthly')">Comprar →</button>
-      </div>
-      <div class="plan popular" id="planYearly">
-        <div style="font-size:10px;color:var(--pro);font-weight:700">MÁS POPULAR</div>
-        <div class="plan-name">Anual</div>
-        <div class="plan-price">$49<span>/año</span></div>
-        <div class="plan-feat">Todo lo mensual<br>Ahorro $59<br>Soporte prioritario<br>Agentes premium</div>
-        <button class="btn-pro btn-sm" style="width:100%;margin-top:10px" onclick="openStripe('yearly')">Comprar →</button>
-      </div>
-      <div class="plan" id="planLifetime">
-        <div class="plan-name">Lifetime</div>
-        <div class="plan-price">$99<span> único</span></div>
-        <div class="plan-feat">Acceso de por vida<br>Todas las funciones<br>Futuras features<br>White-label</div>
-        <button class="btn-pro btn-sm" style="width:100%;margin-top:10px" onclick="openStripe('lifetime')">Comprar →</button>
-      </div>
-    </div>
-    <div style="border-top:1px solid var(--border);padding-top:14px;margin-top:4px">
-      <div style="font-size:12px;color:var(--muted);margin-bottom:8px">¿Ya compraste? Ingresa tu clave de licencia:</div>
-      <div class="key-row">
-        <input id="licenseKeyInput" placeholder="AISH-XXXX-XXXX-XXXX-XXXX" style="font-family:monospace;text-transform:uppercase"/>
-        <button class="btn-pro" id="validateKeyBtn">Activar</button>
-      </div>
-      <div id="keyStatus" style="font-size:12px;margin-top:6px;min-height:18px"></div>
-    </div>
-    <button class="btn-sm" id="closeUpgradeModal" style="width:100%;margin-top:12px">Cerrar</button>
-    <p style="font-size:11px;color:var(--muted);margin:10px 0 0">
-      Modo FREE siempre disponible offline. Pro = Gemini via backend seguro. Sin API key expuesta.
-    </p>
-  </div>
-</div>
+# ── Config ──────────────────────────────────────────────
+STRIPE_WEBHOOK   = os.getenv("STRIPE_WEBHOOK_SECRET", "")
+ADMIN_SECRET     = os.getenv("ADMIN_SECRET", "changeme123")
+DB_PATH          = os.getenv("DB_PATH", "licenses.db")
+GEMINI_API_KEY   = os.getenv("GEMINI_API_KEY", "")
 
-<script>
-// ================================================================
-// CONFIG
-// ================================================================
-const BACKEND_URL = 'https://ai-shell-backend.onrender.com';
-const STRIPE_LINKS = {
-  monthly:  'https://buy.stripe.com/CONFIGURA_AQUI_MONTHLY',
-  yearly:   'https://buy.stripe.com/CONFIGURA_AQUI_YEARLY',
-  lifetime: 'https://buy.stripe.com/CONFIGURA_AQUI_LIFETIME',
-};
+PRICE_MONTHLY    = os.getenv("STRIPE_PRICE_MONTHLY", "price_xxx")
+PRICE_YEARLY     = os.getenv("STRIPE_PRICE_YEARLY", "price_xxx")
+PRICE_LIFETIME   = os.getenv("STRIPE_PRICE_LIFETIME", "price_xxx")
 
-// ================================================================
-// STATE
-// ================================================================
-const AppState = {
-  currentChatId: null,
-  loading: false,
-  plan: 'free',
-  licenseKey: null,
-  licenseExpires: null,
-  settings: {},
-  currentProfile: 'general',
-  profiles: {
-    general:  { label: 'General',  prompt: 'Asistente general claro, útil y estructurado.', free: true },
-    engineer: { label: 'Engineer', prompt: 'Arquitecto técnico. Módulos, riesgos y decisiones concretas.', free: false },
-    product:  { label: 'Product',  prompt: 'Product engineer. Valor, roadmap, monetización y UX.', free: false },
-    analyst:  { label: 'Analyst',  prompt: 'Analista. Hechos, inferencias, riesgos y próximos pasos.', free: false },
-    custom:   { label: 'Custom',   prompt: '', free: false },
-  },
-  defaults: {
-    mode: 'offline',
-    memory: '',
-    systemPrompt: 'Eres un asistente técnico preciso y directo. No inventes datos. Si no sabes, dilo.'
-  }
-};
-
-// ================================================================
-// UTILITIES
-// ================================================================
-const $ = id => document.getElementById(id);
-const uid = () => crypto.randomUUID ? crypto.randomUUID() : String(Date.now() + Math.random());
-const esc = s => String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
-const tokenEst = s => Math.ceil((s||'').split(/\s+/).filter(Boolean).length * 1.33);
-const isPro = () => AppState.plan === 'pro';
-const now = () => new Date().toLocaleTimeString('es', {hour:'2-digit',minute:'2-digit'});
-
-function setStatus(msg) { $('status').textContent = msg; }
-
-function requirePro(label) {
-  if (!isPro()) {
-    $('upgradeModal').classList.remove('hidden');
-    setStatus(`🔒 ${label} requiere PRO`);
-    return true;
-  }
-  return false;
+PLANS = {
+    PRICE_MONTHLY:  {"plan": "pro", "days": 31,    "label": "monthly"},
+    PRICE_YEARLY:   {"plan": "pro", "days": 366,   "label": "yearly"},
+    PRICE_LIFETIME: {"plan": "pro", "days": 99999, "label": "lifetime"},
 }
 
-// ================================================================
-// LICENSE
-// ================================================================
-const License = {
-  KEY: 'ai_shell_license_v1',
-  load() {
-    try {
-      const d = JSON.parse(localStorage.getItem(this.KEY) || 'null');
-      if (!d) return;
-      AppState.licenseKey = d.key;
-      AppState.plan = d.plan || 'free';
-      AppState.licenseExpires = d.expires || null;
-    } catch(e) {}
-  },
-  save(key, plan, expires) {
-    localStorage.setItem(this.KEY, JSON.stringify({ key, plan, expires }));
-    AppState.licenseKey = key;
-    AppState.plan = plan;
-    AppState.licenseExpires = expires;
-  },
-  async validate(key) {
-    const k = key.trim().toUpperCase();
-    try {
-      const r = await fetch(`${BACKEND_URL}/api/validate-key`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ key: k })
-      });
-      const data = await r.json();
-      if (data.valid) {
-        this.save(k, data.plan, data.expires);
-        return { ok: true, plan: data.plan, expires: data.expires };
-      }
-      return { ok: false, error: data.error || 'Clave inválida' };
-    } catch(e) {
-      return { ok: false, error: 'No se pudo conectar al servidor de licencias' };
-    }
-  },
-  revoke() {
-    localStorage.removeItem(this.KEY);
-    AppState.licenseKey = null;
-    AppState.plan = 'free';
-    AppState.licenseExpires = null;
-  }
-};
+# ── Gemini init ─────────────────────────────────────────
+if GEMINI_API_KEY:
+    genai.configure(api_key=GEMINI_API_KEY)
+    gemini_model = genai.GenerativeModel("gemini-1.5-pro")
+else:
+    gemini_model = None
 
-// ================================================================
-// MESSAGE STORE
-// ================================================================
-const MessageStore = {
-  KEY: 'ai_shell_chats_v2',
-  load() { return JSON.parse(localStorage.getItem(this.KEY) || '[]'); },
-  save(chats) { localStorage.setItem(this.KEY, JSON.stringify(chats)); },
-  all() { return this.load(); },
-  get(id) { return this.load().find(c => c.id === id) || null; },
-  upsert(chat) {
-    const chats = this.load();
-    const i = chats.findIndex(c => c.id === chat.id);
-    if (i >= 0) chats[i] = chat; else chats.unshift(chat);
-    this.save(chats.slice(0, 200));
-  },
-  remove(id) { this.save(this.load().filter(c => c.id !== id)); }
-};
+# ── App ─────────────────────────────────────────────────
+app = FastAPI(title="AI Shell License API")
 
-// ================================================================
-// SETTINGS MANAGER
-// ================================================================
-const SettingsManager = {
-  KEY: 'ai_shell_settings_v2',
-  load() { return { ...AppState.defaults, ...JSON.parse(localStorage.getItem(this.KEY) || '{}') }; },
-  save(s) { localStorage.setItem(this.KEY, JSON.stringify(s)); }
-};
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["POST", "GET", "OPTIONS"],
+    allow_headers=["*"],
+)
 
-// ================================================================
-// OFFLINE RESPONDER
-// ================================================================
-const OfflineResponder = {
-  reply(text) {
-    const t = text.toLowerCase();
-    const parts = [];
-    if (t.includes('api') || t.includes('backend'))
-      parts.push('📐 Arquitectura: frontend local + backend proxy para llamadas seguras. Nunca expongas API keys en código público.');
-    if (t.includes('monetiz') || t.includes('cobrar') || t.includes('pago'))
-      parts.push('💰 Modelo recomendado: Free offline, Pro con Gemini backend, Lifetime o créditos.');
-    if (t.includes('export') || t.includes('import'))
-      parts.push('📦 Export JSON = restauración completa. Export MD = lectura humana y documentación.');
-    if (t.includes('seguridad') || t.includes('key') || t.includes('clave'))
-      parts.push('🔒 API keys en frontend = solo demo personal. Producción = backend proxy con auth, rate limit y CORS.');
-    if (t.includes('hola') || t.includes('hello') || t.includes('hi'))
-      parts.push('👋 Hola. Estoy en modo offline. Activa PRO para respuestas reales con Gemini.');
-    if (parts.length === 0)
-      parts.push(`💬 Modo offline: no tengo acceso a API real. Tu mensaje fue: "${text.slice(0,80)}". Activa PRO para respuestas de Gemini.`);
-    return parts.join('\n\n');
-  }
-};
+# ── DB ──────────────────────────────────────────────────
+def get_db():
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    return conn
 
-// ================================================================
-// ONLINE RESPONDER — Gemini via backend ← PATCH PRINCIPAL
-// ================================================================
-const OnlineResponder = {
-  async reply(history, userText) {
-    if (!AppState.licenseKey) {
-      return '🔒 Necesitás una licencia PRO para usar el modo online. Hacé click en ⭐ Upgrade.';
+def init_db():
+    with get_db() as db:
+        db.execute("""
+            CREATE TABLE IF NOT EXISTS licenses (
+                id          INTEGER PRIMARY KEY AUTOINCREMENT,
+                key         TEXT UNIQUE NOT NULL,
+                plan        TEXT NOT NULL DEFAULT 'pro',
+                email       TEXT,
+                stripe_id   TEXT,
+                created_at  TEXT NOT NULL,
+                expires_at  TEXT,
+                active      INTEGER NOT NULL DEFAULT 1,
+                label       TEXT
+            )
+        """)
+        db.execute("CREATE INDEX IF NOT EXISTS idx_key ON licenses(key)")
+        db.commit()
+
+init_db()
+
+# ── Helpers ─────────────────────────────────────────────
+def generate_key(prefix="AISH") -> str:
+    raw = str(uuid.uuid4()).replace("-", "").upper()
+    parts = [raw[i:i+4] for i in range(0, 16, 4)]
+    return f"{prefix}-{'-'.join(parts)}"
+
+def create_license(plan, days, email="", stripe_id="", label="") -> str:
+    key = generate_key()
+    created = datetime.utcnow().isoformat()
+    expires = (datetime.utcnow() + timedelta(days=days)).isoformat() if days < 9999 else "lifetime"
+    with get_db() as db:
+        db.execute(
+            "INSERT INTO licenses (key, plan, email, stripe_id, created_at, expires_at, label) VALUES (?,?,?,?,?,?,?)",
+            (key, plan, email, stripe_id, created, expires, label)
+        )
+        db.commit()
+    return key
+
+def is_valid_license(key: str) -> bool:
+    with get_db() as db:
+        row = db.execute("SELECT * FROM licenses WHERE key = ?", (key.strip().upper(),)).fetchone()
+    if not row or not row["active"]:
+        return False
+    expires = row["expires_at"]
+    if expires and expires != "lifetime":
+        try:
+            if datetime.fromisoformat(expires) < datetime.utcnow():
+                return False
+        except Exception:
+            pass
+    return True
+
+# ── Models ──────────────────────────────────────────────
+class ValidateRequest(BaseModel):
+    key: str
+
+class ManualKeyRequest(BaseModel):
+    plan: str = "pro"
+    days: int = 366
+    email: str = ""
+    label: str = ""
+    admin_secret: str
+
+class ChatRequest(BaseModel):
+    key: str
+    message: str
+    history: list = []   # [{"role": "user"|"model", "parts": "..."}]
+
+# ── Endpoints ────────────────────────────────────────────
+@app.get("/")
+def root():
+    return {"status": "AI Shell License API online", "version": "2.0"}
+
+@app.post("/api/validate-key")
+def validate_key(req: ValidateRequest):
+    key = req.key.strip().upper()
+    if not key:
+        return {"valid": False, "error": "Clave vacía"}
+    with get_db() as db:
+        row = db.execute("SELECT * FROM licenses WHERE key = ?", (key,)).fetchone()
+    if not row:
+        return {"valid": False, "error": "Clave no encontrada"}
+    if not row["active"]:
+        return {"valid": False, "error": "Clave desactivada"}
+    expires = row["expires_at"]
+    if expires and expires != "lifetime":
+        try:
+            if datetime.fromisoformat(expires) < datetime.utcnow():
+                return {"valid": False, "error": "Clave expirada"}
+        except Exception:
+            pass
+    return {
+        "valid": True,
+        "plan": row["plan"],
+        "expires": expires,
+        "label": row["label"] or "pro",
+        "email": row["email"] or "",
     }
 
-    // Convertir historial al formato Gemini (role: user|model)
-    const geminiHistory = history.slice(-10).map(m => ({
-      role: m.role === 'assistant' ? 'model' : 'user',
-      parts: m.content
-    }));
+@app.post("/api/chat")
+async def chat(req: ChatRequest):
+    # 1. Validar licencia
+    if not is_valid_license(req.key):
+        raise HTTPException(status_code=403, detail="Licencia inválida o expirada")
 
-    try {
-      const res = await fetch(`${BACKEND_URL}/api/chat`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          key: AppState.licenseKey,
-          message: userText,
-          history: geminiHistory
-        })
-      });
+    # 2. Verificar Gemini disponible
+    if not gemini_model:
+        raise HTTPException(status_code=503, detail="Gemini API key no configurada")
 
-      if (res.status === 403) return '🔒 Licencia inválida o expirada. Verificá tu clave en ⭐ Upgrade.';
-      if (res.status === 503) return '⚠️ Gemini no configurado en el servidor. Contactá al administrador.';
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        return `❌ Error del servidor (${res.status}): ${err.detail || 'desconocido'}`;
-      }
+    # 3. Construir historial
+    history = []
+    for msg in req.history:
+        role = msg.get("role", "user")
+        parts = msg.get("parts", "")
+        if role in ("user", "model") and parts:
+            history.append({"role": role, "parts": parts})
 
-      const data = await res.json();
-      return data.reply || '⚠️ Respuesta vacía de Gemini.';
+    # 4. Llamar a Gemini
+    try:
+        chat_session = gemini_model.start_chat(history=history)
+        response = chat_session.send_message(req.message)
+        return {"reply": response.text}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Gemini error: {str(e)}")
 
-    } catch (e) {
-      // Fallback offline si no hay conexión
-      return `⚠️ Sin conexión al backend. Modo offline activado.\n\n${OfflineResponder.reply(userText)}`;
-    }
-  }
-};
+@app.post("/api/webhook")
+async def stripe_webhook(request: Request):
+    payload = await request.body()
+    sig = request.headers.get("stripe-signature", "")
+    if STRIPE_WEBHOOK:
+        try:
+            import stripe
+            event = stripe.Webhook.construct_event(payload, sig, STRIPE_WEBHOOK)
+        except Exception as e:
+            raise HTTPException(status_code=400, detail=str(e))
+    else:
+        try:
+            event = json.loads(payload)
+        except Exception:
+            raise HTTPException(status_code=400, detail="Invalid JSON")
+    if event.get("type") == "checkout.session.completed":
+        session = event["data"]["object"]
+        email = session.get("customer_details", {}).get("email", "")
+        stripe_id = session.get("id", "")
+        price_id = session.get("metadata", {}).get("price_id", "")
+        plan_info = PLANS.get(price_id, {"plan": "pro", "days": 366, "label": "pro"})
+        key = create_license(
+            plan=plan_info["plan"],
+            days=plan_info["days"],
+            email=email,
+            stripe_id=stripe_id,
+            label=plan_info["label"]
+        )
+        print(f"License created: {key} for {email}")
+    elif event.get("type") == "customer.subscription.deleted":
+        stripe_id = event["data"]["object"].get("id", "")
+        if stripe_id:
+            with get_db() as db:
+                db.execute("UPDATE licenses SET active=0 WHERE stripe_id=?", (stripe_id,))
+                db.commit()
+    return {"received": True}
 
-// ================================================================
-// RENDER
-// ================================================================
-function renderMessages(chat) {
-  const el = $('messages');
-  if (!chat || !chat.messages.length) {
-    el.innerHTML = `<div style="text-align:center;padding:60px 20px;color:var(--muted)">
-      <div style="font-size:32px;margin-bottom:12px">🤖</div>
-      <div style="font-size:15px;font-weight:600">AI Shell</div>
-      <div style="font-size:12px;margin-top:6px">${isPro() ? 'PRO · Gemini activo' : 'FREE · modo offline'}</div>
-    </div>`;
-    return;
-  }
-  el.innerHTML = chat.messages.map(m => `
-    <div class="msg ${m.role}">
-      <div class="meta">
-        <span>${m.role === 'user' ? '👤 Tú' : '🤖 AI Shell'}</span>
-        <span>${m.time || ''}</span>
-      </div>
-      <pre>${esc(m.content)}</pre>
-    </div>
-  `).join('');
-  el.scrollTop = el.scrollHeight;
-}
+@app.post("/api/admin/create-key")
+def admin_create_key(req: ManualKeyRequest):
+    if req.admin_secret != ADMIN_SECRET:
+        raise HTTPException(status_code=403, detail="Admin secret inválido")
+    key = create_license(plan=req.plan, days=req.days, email=req.email, label=req.label)
+    return {"key": key, "plan": req.plan, "days": req.days}
 
-function renderChatList() {
-  const chats = MessageStore.all();
-  const el = $('chatList');
-  if (!chats.length) {
-    el.innerHTML = '<div style="font-size:11px;color:var(--muted);text-align:center;padding:10px">Sin conversaciones</div>';
-    return;
-  }
-  el.innerHTML = chats.map(c => `
-    <div class="chat-item ${c.id === AppState.currentChatId ? 'active' : ''}" data-id="${c.id}">
-      <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px">${esc(c.title || 'Chat')}</span>
-      <span class="chat-item-del" data-del="${c.id}">✕</span>
-    </div>
-  `).join('');
-}
+@app.get("/api/admin/keys")
+def admin_list_keys(secret: str = ""):
+    if secret != ADMIN_SECRET:
+        raise HTTPException(status_code=403, detail="Admin secret inválido")
+    with get_db() as db:
+        rows = db.execute("SELECT * FROM licenses ORDER BY id DESC LIMIT 100").fetchall()
+    return [dict(r) for r in rows]
 
-function updateStats() {
-  const chat = AppState.currentChatId ? MessageStore.get(AppState.currentChatId) : null;
-  const msgs = chat ? chat.messages : [];
-  $('msgCount').textContent = msgs.length;
-  $('tokenCount').textContent = msgs.reduce((a,m) => a + tokenEst(m.content), 0);
-  $('creditCount').textContent = isPro() ? '∞' : '—';
-}
-
-function updatePlanUI() {
-  const badge = $('planBadge');
-  if (isPro()) {
-    badge.className = 'badge-pro';
-    badge.textContent = 'PRO';
-  } else {
-    badge.className = 'badge-free';
-    badge.textContent = 'FREE';
-  }
-  // Actualizar perfil select
-  const ps = $('profileSelect');
-  ps.innerHTML = Object.entries(AppState.profiles).map(([k,v]) =>
-    `<option value="${k}" ${!v.free && !isPro() ? 'disabled' : ''}>${v.label}${!v.free && !isPro() ? ' 🔒' : ''}</option>`
-  ).join('');
-  ps.value = AppState.currentProfile;
-}
-
-function loadChat(id) {
-  AppState.currentChatId = id;
-  const chat = MessageStore.get(id);
-  $('chatTitle').textContent = chat ? (chat.title || 'Chat') : 'Nuevo chat';
-  renderMessages(chat);
-  renderChatList();
-  updateStats();
-}
-
-function newChat() {
-  const id = uid();
-  const chat = { id, title: 'Nuevo chat', messages: [], createdAt: Date.now() };
-  MessageStore.upsert(chat);
-  loadChat(id);
-}
-
-// ================================================================
-// SEND — lógica principal con routing offline/online
-// ================================================================
-async function send() {
-  if (AppState.loading) return;
-  const input = $('input');
-  const userText = input.value.trim();
-  if (!userText) return;
-
-  // Asegurar chat activo
-  if (!AppState.currentChatId) newChat();
-
-  const chat = MessageStore.get(AppState.currentChatId);
-
-  // Agregar mensaje de usuario
-  const userMsg = { role: 'user', content: userText, time: now() };
-  chat.messages.push(userMsg);
-  if (chat.messages.length === 1) {
-    chat.title = userText.slice(0, 40) + (userText.length > 40 ? '…' : '');
-    $('chatTitle').textContent = chat.title;
-  }
-  MessageStore.upsert(chat);
-  input.value = '';
-  renderMessages(chat);
-
-  // Placeholder "pensando"
-  AppState.loading = true;
-  $('sendBtn').disabled = true;
-  const placeholder = { role: 'assistant', content: '⏳ Pensando…', time: now() };
-  chat.messages.push(placeholder);
-  renderMessages(chat);
-
-  // Routing por modo
-  const mode = AppState.settings.mode || 'offline';
-  let replyText;
-
-  try {
-    if (mode === 'online' || (mode === 'auto' && isPro())) {
-      setStatus('⏳ Gemini respondiendo…');
-      replyText = await OnlineResponder.reply(
-        chat.messages.slice(0, -1), // historial sin el placeholder
-        userText
-      );
-      setStatus(isPro() ? '✅ online · Gemini' : 'offline · listo');
-    } else {
-      setStatus('⚙ offline · procesando…');
-      await new Promise(r => setTimeout(r, 300)); // pequeño delay UX
-      replyText = OfflineResponder.reply(userText);
-      setStatus('offline · listo');
-    }
-  } catch(e) {
-    replyText = `❌ Error inesperado: ${e.message}`;
-    setStatus('❌ error');
-  }
-
-  // Reemplazar placeholder con respuesta real
-  chat.messages[chat.messages.length - 1] = {
-    role: 'assistant',
-    content: replyText,
-    time: now()
-  };
-  MessageStore.upsert(chat);
-  renderMessages(chat);
-  updateStats();
-  renderChatList();
-
-  AppState.loading = false;
-  $('sendBtn').disabled = false;
-  input.focus();
-}
-
-// ================================================================
-// EXPORT / IMPORT
-// ================================================================
-function exportJson() {
-  const chats = MessageStore.all();
-  const blob = new Blob([JSON.stringify(chats, null, 2)], { type: 'application/json' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `ai-shell-chats-${Date.now()}.json`;
-  a.click();
-}
-
-function exportMd() {
-  const chat = AppState.currentChatId ? MessageStore.get(AppState.currentChatId) : null;
-  if (!chat) return;
-  const md = `# ${chat.title}\n\n` + chat.messages.map(m =>
-    `**${m.role === 'user' ? 'Tú' : 'AI Shell'}** (${m.time || ''})\n\n${m.content}`
-  ).join('\n\n---\n\n');
-  const blob = new Blob([md], { type: 'text/markdown' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `${chat.title.replace(/\s+/g,'-')}.md`;
-  a.click();
-}
-
-function importJson(file) {
-  const reader = new FileReader();
-  reader.onload = e => {
-    try {
-      const chats = JSON.parse(e.target.result);
-      if (Array.isArray(chats)) {
-        chats.forEach(c => MessageStore.upsert(c));
-        renderChatList();
-        alert(`✅ ${chats.length} conversaciones importadas`);
-      }
-    } catch { alert('❌ Archivo JSON inválido'); }
-  };
-  reader.readAsText(file);
-}
-
-// ================================================================
-// STRIPE
-// ================================================================
-function openStripe(plan) {
-  const url = STRIPE_LINKS[plan];
-  if (url && !url.includes('CONFIGURA')) {
-    window.open(url, '_blank');
-  } else {
-    alert('⚠️ Links de Stripe no configurados aún. Contactá al administrador.');
-  }
-}
-
-// ================================================================
-// INIT & EVENT LISTENERS
-// ================================================================
-function init() {
-  License.load();
-  AppState.settings = SettingsManager.load();
-  updatePlanUI();
-
-  // Modo select sync
-  $('modeSelect').value = AppState.settings.mode || 'offline';
-  setStatus(AppState.settings.mode === 'online' && isPro() ? '✅ online · Gemini' : 'offline · listo');
-
-  // Cargar primer chat o crear uno
-  const chats = MessageStore.all();
-  if (chats.length) {
-    loadChat(chats[0].id);
-  } else {
-    newChat();
-  }
-
-  // ── Botones ──────────────────────────────────────────
-  $('newChatBtn').onclick = newChat;
-  $('sendBtn').onclick = send;
-  $('clearBtn').onclick = () => {
-    if (!AppState.currentChatId) return;
-    const chat = MessageStore.get(AppState.currentChatId);
-    if (!chat) return;
-    chat.messages = [];
-    MessageStore.upsert(chat);
-    renderMessages(chat);
-    updateStats();
-  };
-
-  $('input').addEventListener('keydown', e => {
-    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
-  });
-
-  $('upgradeBtn').onclick = () => $('upgradeModal').classList.remove('hidden');
-  $('closeUpgradeModal').onclick = () => $('upgradeModal').classList.add('hidden');
-
-  $('validateKeyBtn').onclick = async () => {
-    const key = $('licenseKeyInput').value.trim();
-    if (!key) return;
-    $('keyStatus').textContent = '⏳ Validando…';
-    $('keyStatus').style.color = 'var(--muted)';
-    const result = await License.validate(key);
-    if (result.ok) {
-      $('keyStatus').textContent = `✅ Licencia PRO activada${result.expires && result.expires !== 'lifetime' ? ' · expira ' + result.expires.slice(0,10) : ' · lifetime'}`;
-      $('keyStatus').style.color = 'var(--ok)';
-      updatePlanUI();
-      updateStats();
-      setTimeout(() => $('upgradeModal').classList.add('hidden'), 2000);
-    } else {
-      $('keyStatus').textContent = `❌ ${result.error}`;
-      $('keyStatus').style.color = 'var(--danger)';
-    }
-  };
-
-  // ── Settings ─────────────────────────────────────────
-  $('settingsBtn').onclick = () => $('settingsPanel').classList.toggle('open');
-  $('closeSettings').onclick = () => $('settingsPanel').classList.remove('open');
-
-  // Sync settings panel con estado actual
-  $('cfgMode').value = AppState.settings.mode || 'offline';
-  $('cfgMemory').value = AppState.settings.memory || '';
-  $('cfgSystem').value = AppState.settings.systemPrompt || AppState.defaults.systemPrompt;
-
-  $('saveSettingsBtn').onclick = () => {
-    const s = {
-      mode: $('cfgMode').value,
-      memory: $('cfgMemory').value,
-      systemPrompt: $('cfgSystem').value || AppState.defaults.systemPrompt
-    };
-    SettingsManager.save(s);
-    AppState.settings = s;
-    $('modeSelect').value = s.mode;
-    if (s.mode === 'online' && isPro()) {
-      setStatus('✅ online · Gemini');
-    } else if (s.mode === 'online' && !isPro()) {
-      requirePro('Modo online');
-    } else {
-      setStatus('offline · listo');
-    }
-    $('settingsPanel').classList.remove('open');
-  };
-
-  // ── Mode select (topbar) ──────────────────────────────
-  $('modeSelect').onchange = e => {
-    const m = e.target.value;
-    if (m === 'online' && !isPro()) {
-      requirePro('Modo online');
-      e.target.value = 'offline';
-      return;
-    }
-    AppState.settings.mode = m;
-    SettingsManager.save(AppState.settings);
-    $('cfgMode').value = m;
-    setStatus(m === 'online' ? '✅ online · Gemini' : m === 'auto' ? '⚡ auto fallback' : 'offline · listo');
-  };
-
-  // ── Profile select ────────────────────────────────────
-  $('profileSelect').onchange = e => {
-    const p = e.target.value;
-    const profile = AppState.profiles[p];
-    if (!profile.free && !isPro()) {
-      requirePro(`Perfil ${profile.label}`);
-      e.target.value = 'general';
-      return;
-    }
-    AppState.currentProfile = p;
-  };
-
-  // ── Chat list clicks ──────────────────────────────────
-  $('chatList').onclick = e => {
-    const del = e.target.dataset.del;
-    const id = e.target.closest('.chat-item')?.dataset.id;
-    if (del) {
-      MessageStore.remove(del);
-      if (AppState.currentChatId === del) newChat();
-      else renderChatList();
-      return;
-    }
-    if (id) loadChat(id);
-  };
-
-  // ── Export / Import ───────────────────────────────────
-  $('exportJsonBtn').onclick = exportJson;
-  $('exportMdBtn').onclick = exportMd;
-  $('importBtn').onclick = () => $('importFile').click();
-  $('importFile').onchange = e => { if (e.target.files[0]) importJson(e.target.files[0]); };
-
-  // ── Tema ──────────────────────────────────────────────
-  $('themeBtn').onclick = () => document.body.classList.toggle('light');
-
-  // ── Cerrar settings al hacer click fuera ─────────────
-  document.addEventListener('click', e => {
-    if (!$('settingsPanel').contains(e.target) && e.target !== $('settingsBtn')) {
-      $('settingsPanel').classList.remove('open');
-    }
-  });
-}
-
-document.addEventListener('DOMContentLoaded', init);
-</script>
-</body>
-</html>
+@app.post("/api/admin/revoke")
+def admin_revoke(key: str, secret: str = ""):
+    if secret != ADMIN_SECRET:
+        raise HTTPException(status_code=403, detail="Admin secret inválido")
+    with get_db() as db:
+        db.execute("UPDATE licenses SET active=0 WHERE key=?", (key.upper(),))
+        db.commit()
+    return {"revoked": key}
