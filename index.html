@@ -44,12 +44,10 @@ textarea{min-height:50px;resize:vertical;width:100%}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}
 .stat-val{font-size:20px;font-weight:700;color:var(--accent)}
 .stat-label{font-size:10px;color:var(--muted)}
-/* MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:100;display:flex;align-items:center;justify-content:center;padding:16px}
 .modal-overlay.hidden{display:none}
 .modal{background:var(--panel);border:1px solid var(--border);border-radius:20px;padding:24px;width:min(500px,100%);max-height:90vh;overflow-y:auto}
 .modal h2{margin:0 0 4px;font-size:20px}
-/* PLANS */
 .plans{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0}
 .plan{border:2px solid var(--border);border-radius:14px;padding:14px;text-align:center;cursor:pointer;transition:border-color .2s}
 .plan:hover{border-color:var(--accent)}
@@ -58,15 +56,12 @@ textarea{min-height:50px;resize:vertical;width:100%}
 .plan-price{font-size:22px;font-weight:800;color:var(--accent);margin:4px 0}
 .plan-price span{font-size:12px;color:var(--muted);font-weight:400}
 .plan-feat{font-size:11px;color:var(--muted);margin-top:6px;line-height:1.6}
-/* KEY SECTION */
 .key-row{display:flex;gap:8px;margin:12px 0}
 .key-row input{flex:1;font-family:monospace;letter-spacing:1px}
-/* LOCKED OVERLAY */
 .locked-wrap{position:relative}
 .locked-overlay{position:absolute;inset:0;background:rgba(15,23,42,.85);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;z-index:10;cursor:pointer}
 .locked-overlay .lock-icon{font-size:28px}
 .locked-overlay .lock-label{font-size:12px;color:var(--pro);font-weight:700}
-/* SETTINGS PANEL */
 .settings-panel{position:fixed;right:16px;top:64px;width:min(420px,calc(100vw - 32px));max-height:82vh;overflow-y:auto;background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:16px;display:none;z-index:50}
 .settings-panel.open{display:block}
 .form-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin:10px 0 4px;display:block}
@@ -76,14 +71,11 @@ pre{white-space:pre-wrap;margin:0;font-family:inherit;line-height:1.6}
 .module-tag{font-size:10px;padding:2px 6px;border-radius:4px;font-weight:700}
 .tag-free{background:rgba(52,211,153,.15);color:var(--ok)}
 .tag-pro{background:rgba(167,139,250,.15);color:var(--pro)}
-/* OFFLINE BANNER */
 .offline-banner{background:rgba(251,191,36,.1);border:1px solid var(--warn);border-radius:8px;padding:8px 12px;font-size:12px;color:var(--warn);display:flex;align-items:center;gap:8px}
-/* PROFILE CHIPS */
 .profile-chips{display:flex;flex-wrap:wrap;gap:6px}
 .pchip{padding:6px 12px;border:1px solid var(--border);border-radius:20px;font-size:12px;cursor:pointer}
 .pchip.active{border-color:var(--accent);color:var(--accent)}
 .pchip.locked{border-color:var(--pro);color:var(--pro);opacity:.6;cursor:not-allowed}
-/* ANALYTICS */
 .analytics-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .bar-wrap{background:var(--panel2);border-radius:6px;height:8px;margin-top:4px;overflow:hidden}
 .bar-fill{background:var(--accent);height:100%;border-radius:6px;transition:width .4s}
@@ -96,25 +88,20 @@ pre{white-space:pre-wrap;margin:0;font-family:inherit;line-height:1.6}
 </head>
 <body>
 <div class="app">
-  <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="row">
       <div class="brand">AI Shell</div>
       <span id="planBadge" class="badge-free">FREE</span>
     </div>
-
     <button class="btn-primary" id="newChatBtn" style="width:100%">+ Nuevo chat</button>
-
     <div class="row">
       <button class="btn-sm grow" id="exportJsonBtn">↓ JSON</button>
       <button class="btn-sm grow" id="exportMdBtn">↓ MD</button>
       <button class="btn-sm grow" id="importBtn">↑ Import</button>
       <input type="file" id="importFile" hidden accept=".json"/>
     </div>
-
     <div style="font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px">Conversaciones</div>
     <div class="chat-list" id="chatList"></div>
-
     <div class="card">
       <div style="font-size:12px;font-weight:700;margin-bottom:8px">Uso</div>
       <div class="stats">
@@ -123,11 +110,9 @@ pre{white-space:pre-wrap;margin:0;font-family:inherit;line-height:1.6}
         <div><div class="stat-val" id="creditCount">—</div><div class="stat-label">créditos</div></div>
       </div>
     </div>
-
     <button class="btn-pro" id="upgradeBtn" style="width:100%">⭐ Upgrade a PRO</button>
   </aside>
 
-  <!-- MAIN -->
   <main class="main">
     <header class="topbar">
       <div>
@@ -137,7 +122,7 @@ pre{white-space:pre-wrap;margin:0;font-family:inherit;line-height:1.6}
       <div class="row" style="flex-wrap:wrap;gap:6px">
         <select id="modeSelect">
           <option value="offline">Offline</option>
-          <option value="online">Online (BYOK)</option>
+          <option value="online">Online (Gemini)</option>
           <option value="auto">Auto fallback</option>
         </select>
         <select id="profileSelect"></select>
@@ -145,9 +130,7 @@ pre{white-space:pre-wrap;margin:0;font-family:inherit;line-height:1.6}
         <button id="themeBtn">◑ Tema</button>
       </div>
     </header>
-
     <section class="messages" id="messages"></section>
-
     <footer class="composer">
       <textarea id="input" placeholder="Escribe tu mensaje… Shift+Enter = nueva línea"></textarea>
       <div class="col">
@@ -158,7 +141,6 @@ pre{white-space:pre-wrap;margin:0;font-family:inherit;line-height:1.6}
   </main>
 </div>
 
-<!-- SETTINGS PANEL -->
 <div class="settings-panel" id="settingsPanel">
   <div class="row" style="justify-content:space-between;margin-bottom:12px">
     <b>Configuración</b>
@@ -168,54 +150,26 @@ pre{white-space:pre-wrap;margin:0;font-family:inherit;line-height:1.6}
     <span class="form-label">Modo de respuesta</span>
     <select id="cfgMode">
       <option value="offline">Offline — sin API</option>
-      <option value="online">Online — API real</option>
+      <option value="online">Online — Gemini real</option>
       <option value="auto">Auto fallback</option>
     </select>
-
-    <span class="form-label">Proveedor API <span class="module-tag tag-pro">PRO</span></span>
-    <select id="cfgProvider" disabled>
-      <option value="openai">OpenAI compatible</option>
-      <option value="anthropic">Anthropic</option>
-      <option value="gemini">Gemini</option>
-      <option value="local">Local endpoint</option>
-    </select>
-
-    <span class="form-label">API Key (BYOK) <span class="module-tag tag-pro">PRO</span></span>
-    <input id="cfgApiKey" type="password" placeholder="Solo Pro — se guarda en tu dispositivo" disabled/>
-
-    <span class="form-label">Endpoint</span>
-    <input id="cfgEndpoint" placeholder="https://api.openai.com/v1/chat/completions"/>
-
-    <span class="form-label">Modelo</span>
-    <input id="cfgModel" placeholder="gpt-4o-mini"/>
-
-    <span class="form-label">Temperatura</span>
-    <input id="cfgTemperature" type="number" min="0" max="2" step=".1" value="0.7"/>
-
-    <span class="form-label">Max tokens</span>
-    <input id="cfgMaxTokens" type="number" min="100" max="8000" value="1000"/>
-
     <span class="form-label">Memoria local <span class="module-tag tag-free">FREE</span></span>
     <textarea id="cfgMemory" placeholder="Datos que el asistente debe recordar siempre" style="min-height:70px"></textarea>
-
     <span class="form-label">System prompt <span class="module-tag tag-free">FREE</span></span>
     <textarea id="cfgSystem" style="min-height:80px"></textarea>
-
     <button class="btn-primary" id="saveSettingsBtn">Guardar configuración</button>
   </div>
 </div>
 
-<!-- UPGRADE MODAL -->
 <div class="modal-overlay hidden" id="upgradeModal">
   <div class="modal">
     <h2>⭐ Upgrade a PRO</h2>
-    <p style="color:var(--muted);font-size:13px;margin:0 0 12px">Desbloquea API real, todos los perfiles, agentes y analíticas.</p>
-
+    <p style="color:var(--muted);font-size:13px;margin:0 0 12px">Desbloquea Gemini real, todos los perfiles, agentes y analíticas.</p>
     <div class="plans">
       <div class="plan" id="planMonthly">
         <div class="plan-name">Mensual</div>
         <div class="plan-price">$9<span>/mes</span></div>
-        <div class="plan-feat">API real BYOK<br>Todos los perfiles<br>Export completo<br>Analíticas</div>
+        <div class="plan-feat">Gemini real<br>Todos los perfiles<br>Export completo<br>Analíticas</div>
         <button class="btn-pro btn-sm" style="width:100%;margin-top:10px" onclick="openStripe('monthly')">Comprar →</button>
       </div>
       <div class="plan popular" id="planYearly">
@@ -232,7 +186,6 @@ pre{white-space:pre-wrap;margin:0;font-family:inherit;line-height:1.6}
         <button class="btn-pro btn-sm" style="width:100%;margin-top:10px" onclick="openStripe('lifetime')">Comprar →</button>
       </div>
     </div>
-
     <div style="border-top:1px solid var(--border);padding-top:14px;margin-top:4px">
       <div style="font-size:12px;color:var(--muted);margin-bottom:8px">¿Ya compraste? Ingresa tu clave de licencia:</div>
       <div class="key-row">
@@ -241,20 +194,18 @@ pre{white-space:pre-wrap;margin:0;font-family:inherit;line-height:1.6}
       </div>
       <div id="keyStatus" style="font-size:12px;margin-top:6px;min-height:18px"></div>
     </div>
-
     <button class="btn-sm" id="closeUpgradeModal" style="width:100%;margin-top:12px">Cerrar</button>
-
     <p style="font-size:11px;color:var(--muted);margin:10px 0 0">
-      Modo FREE siempre disponible offline. Pro = BYOK (tu key, tu costo de API). Sin suscripción oculta.
+      Modo FREE siempre disponible offline. Pro = Gemini via backend seguro. Sin API key expuesta.
     </p>
   </div>
 </div>
 
 <script>
 // ================================================================
-// CONFIG — cambia estas URLs antes de deployar
+// CONFIG
 // ================================================================
-const BACKEND_URL = 'https://ai-shell-backend.onrender.com'; // tu backend en Render
+const BACKEND_URL = 'https://ai-shell-backend.onrender.com';
 const STRIPE_LINKS = {
   monthly:  'https://buy.stripe.com/CONFIGURA_AQUI_MONTHLY',
   yearly:   'https://buy.stripe.com/CONFIGURA_AQUI_YEARLY',
@@ -267,23 +218,21 @@ const STRIPE_LINKS = {
 const AppState = {
   currentChatId: null,
   loading: false,
-  plan: 'free',       // 'free' | 'pro'
+  plan: 'free',
   licenseKey: null,
   licenseExpires: null,
   settings: {},
   currentProfile: 'general',
   profiles: {
-    general: { label: 'General', prompt: 'Asistente general claro, útil y estructurado.', free: true },
+    general:  { label: 'General',  prompt: 'Asistente general claro, útil y estructurado.', free: true },
     engineer: { label: 'Engineer', prompt: 'Arquitecto técnico. Módulos, riesgos y decisiones concretas.', free: false },
-    product: { label: 'Product', prompt: 'Product engineer. Valor, roadmap, monetización y UX.', free: false },
-    analyst: { label: 'Analyst', prompt: 'Analista. Hechos, inferencias, riesgos y próximos pasos.', free: false },
-    custom: { label: 'Custom', prompt: '', free: false },
+    product:  { label: 'Product',  prompt: 'Product engineer. Valor, roadmap, monetización y UX.', free: false },
+    analyst:  { label: 'Analyst',  prompt: 'Analista. Hechos, inferencias, riesgos y próximos pasos.', free: false },
+    custom:   { label: 'Custom',   prompt: '', free: false },
   },
   defaults: {
-    mode: 'offline', provider: 'openai',
-    endpoint: 'https://api.openai.com/v1/chat/completions',
-    model: 'gpt-4o-mini', temperature: 0.7, maxTokens: 1000,
-    apiKey: '', memory: '',
+    mode: 'offline',
+    memory: '',
     systemPrompt: 'Eres un asistente técnico preciso y directo. No inventes datos. Si no sabes, dilo.'
   }
 };
@@ -292,11 +241,13 @@ const AppState = {
 // UTILITIES
 // ================================================================
 const $ = id => document.getElementById(id);
-const uid = () => (crypto.randomUUID ? crypto.randomUUID() : String(Date.now() + Math.random()));
-const esc = s => String(s||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+const uid = () => crypto.randomUUID ? crypto.randomUUID() : String(Date.now() + Math.random());
+const esc = s => String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
 const tokenEst = s => Math.ceil((s||'').split(/\s+/).filter(Boolean).length * 1.33);
+const isPro = () => AppState.plan === 'pro';
+const now = () => new Date().toLocaleTimeString('es', {hour:'2-digit',minute:'2-digit'});
 
-function isPro() { return AppState.plan === 'pro'; }
+function setStatus(msg) { $('status').textContent = msg; }
 
 function requirePro(label) {
   if (!isPro()) {
@@ -329,7 +280,6 @@ const License = {
   },
   async validate(key) {
     const k = key.trim().toUpperCase();
-    // Llamada al backend
     try {
       const r = await fetch(`${BACKEND_URL}/api/validate-key`, {
         method: 'POST',
@@ -382,393 +332,418 @@ const SettingsManager = {
 };
 
 // ================================================================
-// PROMPT ENGINE
-// ================================================================
-const PromptEngine = {
-  build(history, userText) {
-    const s = AppState.settings;
-    const profile = AppState.profiles[AppState.currentProfile] || AppState.profiles.general;
-    const system = [
-      s.systemPrompt,
-      'Perfil activo: ' + profile.prompt,
-      s.memory ? 'Memoria local: ' + s.memory : '',
-      !isPro() ? '[Modo FREE] Estás en modo offline sin API real.' : ''
-    ].filter(Boolean).join('\n');
-    return [
-      { role: 'system', content: system },
-      ...history.map(m => ({ role: m.role, content: m.content })),
-      { role: 'user', content: userText }
-    ];
-  }
-};
-
-// ================================================================
 // OFFLINE RESPONDER
 // ================================================================
 const OfflineResponder = {
   reply(text) {
     const t = text.toLowerCase();
     const parts = [];
-    if (t.includes('api') || t.includes('backend')) parts.push('📐 Arquitectura: frontend local + backend proxy para llamadas seguras. Nunca expongas API keys en código público.');
-    if (t.includes('monetiz') || t.includes('cobrar') || t.includes('pago')) parts.push('💰 Modelo recomendado: Free offline, Pro BYOK (usuario trae su API key), Lifetime o créditos. Sin costo de compute para el operador.');
-    if (t.includes('export') || t.includes('import')) parts.push('📦 Export JSON = restauración completa. Export MD = lectura humana y documentación.');
-    if (t.includes('seguridad') || t.includes('key') || t.includes('clave')) parts.push('🔒 API keys en frontend = solo demo personal. Producción = backend proxy con auth, rate limit, CORS y logs.');
-    if (t.includes('perfil') || t.includes('agente')) parts.push('🤖 Perfiles disponibles: General (free), Engineer, Product, Analyst (pro). Agentes = módulos con system prompts especializados.');
-    if (!parts.length) parts.push('🧠 Respondiendo en modo offline. Activa el modo Online con tu API key Pro para respuestas de modelos reales.\n\nPuedo ayudarte con arquitectura, monetización, prompts, flujos de producto o análisis de datos.');
-    return parts.join('\n\n') + '\n\n─\n*[offline_engine · modo sin API]*';
+    if (t.includes('api') || t.includes('backend'))
+      parts.push('📐 Arquitectura: frontend local + backend proxy para llamadas seguras. Nunca expongas API keys en código público.');
+    if (t.includes('monetiz') || t.includes('cobrar') || t.includes('pago'))
+      parts.push('💰 Modelo recomendado: Free offline, Pro con Gemini backend, Lifetime o créditos.');
+    if (t.includes('export') || t.includes('import'))
+      parts.push('📦 Export JSON = restauración completa. Export MD = lectura humana y documentación.');
+    if (t.includes('seguridad') || t.includes('key') || t.includes('clave'))
+      parts.push('🔒 API keys en frontend = solo demo personal. Producción = backend proxy con auth, rate limit y CORS.');
+    if (t.includes('hola') || t.includes('hello') || t.includes('hi'))
+      parts.push('👋 Hola. Estoy en modo offline. Activa PRO para respuestas reales con Gemini.');
+    if (parts.length === 0)
+      parts.push(`💬 Modo offline: no tengo acceso a API real. Tu mensaje fue: "${text.slice(0,80)}". Activa PRO para respuestas de Gemini.`);
+    return parts.join('\n\n');
   }
 };
 
 // ================================================================
-// API CLIENT
+// ONLINE RESPONDER — Gemini via backend ← PATCH PRINCIPAL
 // ================================================================
-const APIClient = {
-  async send(messages) {
-    if (requirePro('API real')) throw new Error('Pro requerido');
-    const s = AppState.settings;
-    if (!s.apiKey) throw new Error('Falta API Key en Config. Activa PRO y pega tu key.');
-    const body = { model: s.model, messages, temperature: +s.temperature, max_tokens: +s.maxTokens, stream: false };
-    const headers = { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + s.apiKey };
-    const res = await fetch(s.endpoint, { method: 'POST', headers, body: JSON.stringify(body) });
-    if (!res.ok) throw new Error('API error ' + res.status + ': ' + await res.text());
-    const data = await res.json();
-    return data?.choices?.[0]?.message?.content
-      || data?.content?.[0]?.text
-      || data?.candidates?.[0]?.content?.parts?.[0]?.text
-      || JSON.stringify(data, null, 2);
+const OnlineResponder = {
+  async reply(history, userText) {
+    if (!AppState.licenseKey) {
+      return '🔒 Necesitás una licencia PRO para usar el modo online. Hacé click en ⭐ Upgrade.';
+    }
+
+    // Convertir historial al formato Gemini (role: user|model)
+    const geminiHistory = history.slice(-10).map(m => ({
+      role: m.role === 'assistant' ? 'model' : 'user',
+      parts: m.content
+    }));
+
+    try {
+      const res = await fetch(`${BACKEND_URL}/api/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          key: AppState.licenseKey,
+          message: userText,
+          history: geminiHistory
+        })
+      });
+
+      if (res.status === 403) return '🔒 Licencia inválida o expirada. Verificá tu clave en ⭐ Upgrade.';
+      if (res.status === 503) return '⚠️ Gemini no configurado en el servidor. Contactá al administrador.';
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        return `❌ Error del servidor (${res.status}): ${err.detail || 'desconocido'}`;
+      }
+
+      const data = await res.json();
+      return data.reply || '⚠️ Respuesta vacía de Gemini.';
+
+    } catch (e) {
+      // Fallback offline si no hay conexión
+      return `⚠️ Sin conexión al backend. Modo offline activado.\n\n${OfflineResponder.reply(userText)}`;
+    }
   }
 };
 
 // ================================================================
-// EXPORT MANAGER
+// RENDER
 // ================================================================
-const ExportManager = {
-  download(name, content, type) {
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(new Blob([content], { type }));
-    a.download = name; a.click();
-  },
-  json() {
-    const c = MessageStore.get(AppState.currentChatId);
-    if (!c) return;
-    this.download('chat-' + Date.now() + '.json', JSON.stringify(c, null, 2), 'application/json');
-  },
-  markdown() {
-    if (requirePro('Export Markdown')) return;
-    const c = MessageStore.get(AppState.currentChatId);
-    if (!c) return;
-    const md = '# ' + c.title + '\n\n' + c.messages.map(m => '## ' + m.role + '\n\n' + m.content).join('\n\n---\n\n');
-    this.download('chat-' + Date.now() + '.md', md, 'text/markdown');
+function renderMessages(chat) {
+  const el = $('messages');
+  if (!chat || !chat.messages.length) {
+    el.innerHTML = `<div style="text-align:center;padding:60px 20px;color:var(--muted)">
+      <div style="font-size:32px;margin-bottom:12px">🤖</div>
+      <div style="font-size:15px;font-weight:600">AI Shell</div>
+      <div style="font-size:12px;margin-top:6px">${isPro() ? 'PRO · Gemini activo' : 'FREE · modo offline'}</div>
+    </div>`;
+    return;
   }
-};
-
-// ================================================================
-// ANALYTICS MODULE (PRO)
-// ================================================================
-const Analytics = {
-  get() {
-    const chats = MessageStore.all();
-    const totalMsgs = chats.reduce((a, c) => a + c.messages.length, 0);
-    const totalTokens = chats.reduce((a, c) => a + c.messages.reduce((b, m) => b + tokenEst(m.content), 0), 0);
-    const wins = chats.filter(c => (c.messages || []).some(m => m.role === 'assistant')).length;
-    return { totalMsgs, totalTokens, chats: chats.length, wins };
-  },
-  render() {
-    if (!isPro()) return '<div style="text-align:center;padding:20px;color:var(--pro)">🔒 Analíticas disponibles en PRO</div>';
-    const d = this.get();
-    const usagePct = Math.min(100, Math.round(d.totalTokens / 100000 * 100));
-    return `
-      <div class="analytics-grid">
-        <div class="card"><div class="stat-label">Chats totales</div><div class="stat-val">${d.chats}</div></div>
-        <div class="card"><div class="stat-label">Mensajes totales</div><div class="stat-val">${d.totalMsgs}</div></div>
-        <div class="card"><div class="stat-label">Tokens estimados</div><div class="stat-val">${d.totalTokens.toLocaleString()}</div></div>
-        <div class="card"><div class="stat-label">Chats con respuesta</div><div class="stat-val">${d.wins}</div></div>
+  el.innerHTML = chat.messages.map(m => `
+    <div class="msg ${m.role}">
+      <div class="meta">
+        <span>${m.role === 'user' ? '👤 Tú' : '🤖 AI Shell'}</span>
+        <span>${m.time || ''}</span>
       </div>
-      <div class="card" style="margin-top:10px">
-        <div class="stat-label">Uso de tokens (100K límite)</div>
-        <div class="bar-wrap"><div class="bar-fill" style="width:${usagePct}%"></div></div>
-        <div style="font-size:11px;color:var(--muted);margin-top:4px">${d.totalTokens.toLocaleString()} / 100,000</div>
-      </div>`;
+      <pre>${esc(m.content)}</pre>
+    </div>
+  `).join('');
+  el.scrollTop = el.scrollHeight;
+}
+
+function renderChatList() {
+  const chats = MessageStore.all();
+  const el = $('chatList');
+  if (!chats.length) {
+    el.innerHTML = '<div style="font-size:11px;color:var(--muted);text-align:center;padding:10px">Sin conversaciones</div>';
+    return;
   }
-};
+  el.innerHTML = chats.map(c => `
+    <div class="chat-item ${c.id === AppState.currentChatId ? 'active' : ''}" data-id="${c.id}">
+      <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px">${esc(c.title || 'Chat')}</span>
+      <span class="chat-item-del" data-del="${c.id}">✕</span>
+    </div>
+  `).join('');
+}
+
+function updateStats() {
+  const chat = AppState.currentChatId ? MessageStore.get(AppState.currentChatId) : null;
+  const msgs = chat ? chat.messages : [];
+  $('msgCount').textContent = msgs.length;
+  $('tokenCount').textContent = msgs.reduce((a,m) => a + tokenEst(m.content), 0);
+  $('creditCount').textContent = isPro() ? '∞' : '—';
+}
+
+function updatePlanUI() {
+  const badge = $('planBadge');
+  if (isPro()) {
+    badge.className = 'badge-pro';
+    badge.textContent = 'PRO';
+  } else {
+    badge.className = 'badge-free';
+    badge.textContent = 'FREE';
+  }
+  // Actualizar perfil select
+  const ps = $('profileSelect');
+  ps.innerHTML = Object.entries(AppState.profiles).map(([k,v]) =>
+    `<option value="${k}" ${!v.free && !isPro() ? 'disabled' : ''}>${v.label}${!v.free && !isPro() ? ' 🔒' : ''}</option>`
+  ).join('');
+  ps.value = AppState.currentProfile;
+}
+
+function loadChat(id) {
+  AppState.currentChatId = id;
+  const chat = MessageStore.get(id);
+  $('chatTitle').textContent = chat ? (chat.title || 'Chat') : 'Nuevo chat';
+  renderMessages(chat);
+  renderChatList();
+  updateStats();
+}
+
+function newChat() {
+  const id = uid();
+  const chat = { id, title: 'Nuevo chat', messages: [], createdAt: Date.now() };
+  MessageStore.upsert(chat);
+  loadChat(id);
+}
 
 // ================================================================
-// MAIN UI
+// SEND — lógica principal con routing offline/online
 // ================================================================
-const UI = {
-  init() {
-    License.load();
-    AppState.settings = SettingsManager.load();
-    this.bind();
-    this.renderProfiles();
-    this.applySettingsToForm();
-    this.ensureChat();
-    this.render();
-    this.applyPlanUI();
-  },
+async function send() {
+  if (AppState.loading) return;
+  const input = $('input');
+  const userText = input.value.trim();
+  if (!userText) return;
 
-  bind() {
-    $('newChatBtn').onclick = () => this.newChat();
-    $('sendBtn').onclick = () => this.send();
-    $('clearBtn').onclick = () => this.clearChat();
-    $('settingsBtn').onclick = () => $('settingsPanel').classList.toggle('open');
-    $('closeSettings').onclick = () => $('settingsPanel').classList.remove('open');
-    $('themeBtn').onclick = () => document.body.classList.toggle('light');
-    $('saveSettingsBtn').onclick = () => this.saveSettings();
-    $('exportJsonBtn').onclick = () => ExportManager.json();
-    $('exportMdBtn').onclick = () => ExportManager.markdown();
-    $('importBtn').onclick = () => $('importFile').click();
-    $('importFile').onchange = e => this.importFile(e);
-    $('upgradeBtn').onclick = () => $('upgradeModal').classList.remove('hidden');
-    $('closeUpgradeModal').onclick = () => $('upgradeModal').classList.add('hidden');
-    $('validateKeyBtn').onclick = () => this.validateKey();
-    $('modeSelect').onchange = e => { AppState.settings.mode = e.target.value; SettingsManager.save(AppState.settings); };
-    $('input').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); this.send(); } });
-    $('licenseKeyInput').addEventListener('keydown', e => { if (e.key === 'Enter') this.validateKey(); });
-  },
+  // Asegurar chat activo
+  if (!AppState.currentChatId) newChat();
 
-  renderProfiles() {
-    const sel = $('profileSelect');
-    sel.innerHTML = '';
-    Object.entries(AppState.profiles).forEach(([k, v]) => {
-      if (!isPro() && !v.free) return;
-      const opt = document.createElement('option');
-      opt.value = k; opt.textContent = v.label;
-      sel.appendChild(opt);
-    });
-    sel.onchange = e => { AppState.currentProfile = e.target.value; };
-  },
+  const chat = MessageStore.get(AppState.currentChatId);
 
-  applySettingsToForm() {
-    const s = AppState.settings;
-    ['cfgMode','cfgProvider','cfgEndpoint','cfgModel','cfgTemperature','cfgMaxTokens','cfgApiKey','cfgMemory','cfgSystem'].forEach(id => {
-      const key = id.replace('cfg','').charAt(0).toLowerCase() + id.replace('cfg','').slice(1);
-      const el = $(id);
-      if (el) el.value = s[key.toLowerCase()] ?? s[key] ?? '';
-    });
-    $('cfgMode').value = s.mode || 'offline';
-  },
+  // Agregar mensaje de usuario
+  const userMsg = { role: 'user', content: userText, time: now() };
+  chat.messages.push(userMsg);
+  if (chat.messages.length === 1) {
+    chat.title = userText.slice(0, 40) + (userText.length > 40 ? '…' : '');
+    $('chatTitle').textContent = chat.title;
+  }
+  MessageStore.upsert(chat);
+  input.value = '';
+  renderMessages(chat);
 
-  saveSettings() {
-    const s = { ...AppState.settings };
-    s.mode = $('cfgMode').value;
-    s.provider = $('cfgProvider').value;
-    s.endpoint = $('cfgEndpoint').value;
-    s.model = $('cfgModel').value;
-    s.temperature = $('cfgTemperature').value;
-    s.maxTokens = $('cfgMaxTokens').value;
-    s.apiKey = $('cfgApiKey').value;
-    s.memory = $('cfgMemory').value;
-    s.systemPrompt = $('cfgSystem').value;
-    AppState.settings = s;
-    SettingsManager.save(s);
-    $('modeSelect').value = s.mode;
-    setStatus('configuración guardada');
-  },
+  // Placeholder "pensando"
+  AppState.loading = true;
+  $('sendBtn').disabled = true;
+  const placeholder = { role: 'assistant', content: '⏳ Pensando…', time: now() };
+  chat.messages.push(placeholder);
+  renderMessages(chat);
 
-  applyPlanUI() {
-    const pro = isPro();
-    $('planBadge').textContent = pro ? 'PRO' : 'FREE';
-    $('planBadge').className = pro ? 'badge-pro' : 'badge-free';
-    const apiKeyEl = $('cfgApiKey');
-    const providerEl = $('cfgProvider');
-    if (apiKeyEl) { apiKeyEl.disabled = !pro; apiKeyEl.placeholder = pro ? 'sk-...' : '🔒 Solo PRO'; }
-    if (providerEl) providerEl.disabled = !pro;
-    if (pro) $('upgradeBtn').textContent = '✅ PRO activo';
-    this.renderProfiles();
-  },
+  // Routing por modo
+  const mode = AppState.settings.mode || 'offline';
+  let replyText;
 
-  async validateKey() {
+  try {
+    if (mode === 'online' || (mode === 'auto' && isPro())) {
+      setStatus('⏳ Gemini respondiendo…');
+      replyText = await OnlineResponder.reply(
+        chat.messages.slice(0, -1), // historial sin el placeholder
+        userText
+      );
+      setStatus(isPro() ? '✅ online · Gemini' : 'offline · listo');
+    } else {
+      setStatus('⚙ offline · procesando…');
+      await new Promise(r => setTimeout(r, 300)); // pequeño delay UX
+      replyText = OfflineResponder.reply(userText);
+      setStatus('offline · listo');
+    }
+  } catch(e) {
+    replyText = `❌ Error inesperado: ${e.message}`;
+    setStatus('❌ error');
+  }
+
+  // Reemplazar placeholder con respuesta real
+  chat.messages[chat.messages.length - 1] = {
+    role: 'assistant',
+    content: replyText,
+    time: now()
+  };
+  MessageStore.upsert(chat);
+  renderMessages(chat);
+  updateStats();
+  renderChatList();
+
+  AppState.loading = false;
+  $('sendBtn').disabled = false;
+  input.focus();
+}
+
+// ================================================================
+// EXPORT / IMPORT
+// ================================================================
+function exportJson() {
+  const chats = MessageStore.all();
+  const blob = new Blob([JSON.stringify(chats, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `ai-shell-chats-${Date.now()}.json`;
+  a.click();
+}
+
+function exportMd() {
+  const chat = AppState.currentChatId ? MessageStore.get(AppState.currentChatId) : null;
+  if (!chat) return;
+  const md = `# ${chat.title}\n\n` + chat.messages.map(m =>
+    `**${m.role === 'user' ? 'Tú' : 'AI Shell'}** (${m.time || ''})\n\n${m.content}`
+  ).join('\n\n---\n\n');
+  const blob = new Blob([md], { type: 'text/markdown' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `${chat.title.replace(/\s+/g,'-')}.md`;
+  a.click();
+}
+
+function importJson(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const chats = JSON.parse(e.target.result);
+      if (Array.isArray(chats)) {
+        chats.forEach(c => MessageStore.upsert(c));
+        renderChatList();
+        alert(`✅ ${chats.length} conversaciones importadas`);
+      }
+    } catch { alert('❌ Archivo JSON inválido'); }
+  };
+  reader.readAsText(file);
+}
+
+// ================================================================
+// STRIPE
+// ================================================================
+function openStripe(plan) {
+  const url = STRIPE_LINKS[plan];
+  if (url && !url.includes('CONFIGURA')) {
+    window.open(url, '_blank');
+  } else {
+    alert('⚠️ Links de Stripe no configurados aún. Contactá al administrador.');
+  }
+}
+
+// ================================================================
+// INIT & EVENT LISTENERS
+// ================================================================
+function init() {
+  License.load();
+  AppState.settings = SettingsManager.load();
+  updatePlanUI();
+
+  // Modo select sync
+  $('modeSelect').value = AppState.settings.mode || 'offline';
+  setStatus(AppState.settings.mode === 'online' && isPro() ? '✅ online · Gemini' : 'offline · listo');
+
+  // Cargar primer chat o crear uno
+  const chats = MessageStore.all();
+  if (chats.length) {
+    loadChat(chats[0].id);
+  } else {
+    newChat();
+  }
+
+  // ── Botones ──────────────────────────────────────────
+  $('newChatBtn').onclick = newChat;
+  $('sendBtn').onclick = send;
+  $('clearBtn').onclick = () => {
+    if (!AppState.currentChatId) return;
+    const chat = MessageStore.get(AppState.currentChatId);
+    if (!chat) return;
+    chat.messages = [];
+    MessageStore.upsert(chat);
+    renderMessages(chat);
+    updateStats();
+  };
+
+  $('input').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
+  });
+
+  $('upgradeBtn').onclick = () => $('upgradeModal').classList.remove('hidden');
+  $('closeUpgradeModal').onclick = () => $('upgradeModal').classList.add('hidden');
+
+  $('validateKeyBtn').onclick = async () => {
     const key = $('licenseKeyInput').value.trim();
     if (!key) return;
     $('keyStatus').textContent = '⏳ Validando…';
-    $('validateKeyBtn').disabled = true;
+    $('keyStatus').style.color = 'var(--muted)';
     const result = await License.validate(key);
-    $('validateKeyBtn').disabled = false;
     if (result.ok) {
-      $('keyStatus').innerHTML = `<span style="color:var(--ok)">✅ PRO activado! Expira: ${result.expires || 'lifetime'}</span>`;
-      setTimeout(() => {
-        $('upgradeModal').classList.add('hidden');
-        this.applyPlanUI();
-        this.render();
-        setStatus('✅ PRO activado');
-      }, 1500);
+      $('keyStatus').textContent = `✅ Licencia PRO activada${result.expires && result.expires !== 'lifetime' ? ' · expira ' + result.expires.slice(0,10) : ' · lifetime'}`;
+      $('keyStatus').style.color = 'var(--ok)';
+      updatePlanUI();
+      updateStats();
+      setTimeout(() => $('upgradeModal').classList.add('hidden'), 2000);
     } else {
-      $('keyStatus').innerHTML = `<span style="color:var(--danger)">❌ ${result.error}</span>`;
+      $('keyStatus').textContent = `❌ ${result.error}`;
+      $('keyStatus').style.color = 'var(--danger)';
     }
-  },
+  };
 
-  ensureChat() {
-    const chats = MessageStore.all();
-    if (chats.length) AppState.currentChatId = chats[0].id;
-    else this.newChat(false);
-  },
+  // ── Settings ─────────────────────────────────────────
+  $('settingsBtn').onclick = () => $('settingsPanel').classList.toggle('open');
+  $('closeSettings').onclick = () => $('settingsPanel').classList.remove('open');
 
-  newChat(render = true) {
-    const chat = { id: uid(), title: 'Nuevo chat', createdAt: new Date().toISOString(), messages: [] };
-    MessageStore.upsert(chat);
-    AppState.currentChatId = chat.id;
-    if (render) this.render();
-  },
+  // Sync settings panel con estado actual
+  $('cfgMode').value = AppState.settings.mode || 'offline';
+  $('cfgMemory').value = AppState.settings.memory || '';
+  $('cfgSystem').value = AppState.settings.systemPrompt || AppState.defaults.systemPrompt;
 
-  current() { return MessageStore.get(AppState.currentChatId); },
-
-  render() {
-    this.renderSidebar();
-    this.renderMessages();
-    this.renderStats();
-  },
-
-  renderSidebar() {
-    const chats = MessageStore.all();
-    $('chatList').innerHTML = chats.map(c => `
-      <div class="chat-item ${c.id === AppState.currentChatId ? 'active' : ''}" onclick="UI.openChat('${c.id}')">
-        <div style="overflow:hidden">
-          <div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(c.title)}</div>
-          <div style="font-size:11px;color:var(--muted)">${c.messages.length} msgs</div>
-        </div>
-        <button class="chat-item-del btn-sm" onclick="event.stopPropagation();UI.deleteChat('${c.id}')">✕</button>
-      </div>`).join('');
-  },
-
-  openChat(id) { AppState.currentChatId = id; this.render(); },
-
-  deleteChat(id) {
-    MessageStore.remove(id);
-    if (AppState.currentChatId === id) {
-      const chats = MessageStore.all();
-      if (chats.length) AppState.currentChatId = chats[0].id;
-      else this.newChat(false);
+  $('saveSettingsBtn').onclick = () => {
+    const s = {
+      mode: $('cfgMode').value,
+      memory: $('cfgMemory').value,
+      systemPrompt: $('cfgSystem').value || AppState.defaults.systemPrompt
+    };
+    SettingsManager.save(s);
+    AppState.settings = s;
+    $('modeSelect').value = s.mode;
+    if (s.mode === 'online' && isPro()) {
+      setStatus('✅ online · Gemini');
+    } else if (s.mode === 'online' && !isPro()) {
+      requirePro('Modo online');
+    } else {
+      setStatus('offline · listo');
     }
-    this.render();
-  },
+    $('settingsPanel').classList.remove('open');
+  };
 
-  renderMessages() {
-    const c = this.current();
-    if (!c) return;
-    $('chatTitle').textContent = c.title;
-    $('messages').innerHTML = c.messages.map((m, i) => `
-      <div class="msg ${m.role}">
-        <div class="meta">
-          <span style="font-weight:700">${m.role === 'user' ? '👤 Tú' : '🤖 Asistente'}</span>
-          <div class="row">
-            <span>${m.ts ? new Date(m.ts).toLocaleTimeString() : ''}</span>
-            <button class="btn-sm" onclick="UI.copyMsg(${i})">copy</button>
-          </div>
-        </div>
-        <pre>${esc(m.content)}</pre>
-      </div>`).join('') +
-      (AppState.loading ? `<div class="msg"><span style="color:var(--warn)"><span class="loading-dot">●</span> Generando…</span></div>` : '');
-    $('messages').scrollTop = $('messages').scrollHeight;
-  },
-
-  renderStats() {
-    const c = this.current();
-    if (!c) return;
-    const tokens = c.messages.reduce((a, m) => a + tokenEst(m.content), 0);
-    $('msgCount').textContent = c.messages.length;
-    $('tokenCount').textContent = tokens;
-    $('creditCount').textContent = isPro() ? '∞' : Math.max(0, 200 - tokens);
-  },
-
-  copyMsg(i) {
-    const m = this.current()?.messages[i];
-    if (!m) return;
-    navigator.clipboard.writeText(m.content).catch(() => {});
-    setStatus('copiado');
-  },
-
-  async send() {
-    const text = $('input').value.trim();
-    if (!text || AppState.loading) return;
-    const c = this.current();
-    if (!c) return;
-
-    // Free limit check
-    if (!isPro() && c.messages.length >= 40) {
-      $('upgradeModal').classList.remove('hidden');
-      setStatus('🔒 Límite FREE alcanzado — upgrade a PRO');
+  // ── Mode select (topbar) ──────────────────────────────
+  $('modeSelect').onchange = e => {
+    const m = e.target.value;
+    if (m === 'online' && !isPro()) {
+      requirePro('Modo online');
+      e.target.value = 'offline';
       return;
     }
+    AppState.settings.mode = m;
+    SettingsManager.save(AppState.settings);
+    $('cfgMode').value = m;
+    setStatus(m === 'online' ? '✅ online · Gemini' : m === 'auto' ? '⚡ auto fallback' : 'offline · listo');
+  };
 
-    c.messages.push({ role: 'user', content: text, ts: new Date().toISOString() });
-    if (c.title === 'Nuevo chat') c.title = text.slice(0, 42);
-    $('input').value = '';
-    MessageStore.upsert(c);
-    AppState.loading = true;
-    this.render();
-
-    try {
-      const prompt = PromptEngine.build(c.messages.slice(0, -1), text);
-      let answer;
-      const mode = AppState.settings.mode || 'offline';
-      if (mode === 'offline') {
-        answer = OfflineResponder.reply(text);
-      } else {
-        try {
-          answer = await APIClient.send(prompt);
-        } catch(err) {
-          if (mode === 'auto') answer = OfflineResponder.reply(text) + '\n\n[auto-fallback] ' + err.message;
-          else throw err;
-        }
-      }
-      c.messages.push({ role: 'assistant', content: answer, ts: new Date().toISOString() });
-      setStatus('respuesta lista');
-    } catch(err) {
-      c.messages.push({ role: 'assistant', content: '❌ ERROR: ' + err.message, ts: new Date().toISOString() });
-      setStatus('error');
-    } finally {
-      AppState.loading = false;
-      MessageStore.upsert(c);
-      this.render();
+  // ── Profile select ────────────────────────────────────
+  $('profileSelect').onchange = e => {
+    const p = e.target.value;
+    const profile = AppState.profiles[p];
+    if (!profile.free && !isPro()) {
+      requirePro(`Perfil ${profile.label}`);
+      e.target.value = 'general';
+      return;
     }
-  },
+    AppState.currentProfile = p;
+  };
 
-  clearChat() {
-    const c = this.current();
-    if (!c) return;
-    c.messages = []; c.title = 'Nuevo chat';
-    MessageStore.upsert(c);
-    this.render();
-  },
+  // ── Chat list clicks ──────────────────────────────────
+  $('chatList').onclick = e => {
+    const del = e.target.dataset.del;
+    const id = e.target.closest('.chat-item')?.dataset.id;
+    if (del) {
+      MessageStore.remove(del);
+      if (AppState.currentChatId === del) newChat();
+      else renderChatList();
+      return;
+    }
+    if (id) loadChat(id);
+  };
 
-  importFile(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    const r = new FileReader();
-    r.onload = () => {
-      try {
-        const c = JSON.parse(r.result);
-        if (!c.id) c.id = uid();
-        if (!Array.isArray(c.messages)) throw new Error('JSON inválido');
-        MessageStore.upsert(c);
-        AppState.currentChatId = c.id;
-        this.render();
-        setStatus('import OK');
-      } catch(err) { alert('Import error: ' + err.message); }
-    };
-    r.readAsText(file);
-  }
-};
+  // ── Export / Import ───────────────────────────────────
+  $('exportJsonBtn').onclick = exportJson;
+  $('exportMdBtn').onclick = exportMd;
+  $('importBtn').onclick = () => $('importFile').click();
+  $('importFile').onchange = e => { if (e.target.files[0]) importJson(e.target.files[0]); };
 
-// ================================================================
-// HELPERS
-// ================================================================
-function setStatus(msg) { $('status').textContent = msg; }
+  // ── Tema ──────────────────────────────────────────────
+  $('themeBtn').onclick = () => document.body.classList.toggle('light');
 
-function openStripe(plan) {
-  const url = STRIPE_LINKS[plan];
-  if (!url || url.includes('CONFIGURA_AQUI')) {
-    alert('⚙ Configura tu Stripe Payment Link en el archivo index.html (variable STRIPE_LINKS).\n\nUna vez configurado, el usuario será redirigido al checkout de Stripe.');
-    return;
-  }
-  window.open(url, '_blank');
+  // ── Cerrar settings al hacer click fuera ─────────────
+  document.addEventListener('click', e => {
+    if (!$('settingsPanel').contains(e.target) && e.target !== $('settingsBtn')) {
+      $('settingsPanel').classList.remove('open');
+    }
+  });
 }
 
-window.UI = UI;
-window.openStripe = openStripe;
-
-UI.init();
+document.addEventListener('DOMContentLoaded', init);
 </script>
 </body>
 </html>
